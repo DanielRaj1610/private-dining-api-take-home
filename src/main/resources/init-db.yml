@@ -1,0 +1,92 @@
+restaurants:
+  - id: 695f1151aec657696e6af7c4
+    name: French Foundary
+    address: Mark Street
+    cuisineType: Italian
+    capacity: 300
+    spaces:
+      - id: aa43ac6a-f8db-423e-be5b-ca91ba73c0e8
+        name: CornerTable
+        minCapacity: 10
+        maxCapacity: 20
+      - id: 23981531-2845-4aea-941b-6a05ed8a8c3b
+        name: RoofTable
+        minCapacity: 100
+        maxCapacity: 200
+      - id: b6534538-2bf0-4799-841b-13144f1db92c
+        name: MiddleTable
+        minCapacity: 50
+        maxCapacity: 100
+      - id: c39f065b-51d4-4ca0-9a09-0b7a9c37e81c
+        name: OceanViewTable
+        minCapacity: 9
+        maxCapacity: 20
+
+  - id: 695f118f82b17b0e76aa47da
+    name: Mercury Sizzlers
+    address: Heath Street
+    cuisineType: French
+    capacity: 300
+    spaces:
+      - id: e5000a52-ab2b-44b5-9872-9db86cfdd2ef
+        name: CornerTable
+        minCapacity: 10
+        maxCapacity: 20
+      - id: a664d1b7-1ed8-42ad-9c75-fca71f43aff0
+        name: RoofTable
+        minCapacity: 100
+        maxCapacity: 200
+      - id: a82122c2-6bb7-4f4a-b8e8-ff382e141e3e
+        name: MiddleTable
+        minCapacity: 50
+        maxCapacity: 100
+      - id: 6a193e8a-87ae-4952-aff8-6621ded1cee4
+        name: OceanViewTable
+        minCapacity: 9
+        maxCapacity: 20
+
+reservations:
+  - id: 695f1a5af8bf245a496edc6b
+    restaurantId: 695f118f82b17b0e76aa47da
+    spaceId: 6a193e8a-87ae-4952-aff8-6621ded1cee4
+    customerEmail: customer@example.com
+    startTime: 30-01-2026 18:00
+    endTime: 30-01-2026 23:00
+    partySize: 20
+    status: CONFIRMED
+
+  - id: 695f1a5af8bf245a496edc6c
+    restaurantId: 695f1151aec657696e6af7c4
+    spaceId: c39f065b-51d4-4ca0-9a09-0b7a9c37e81c
+    customerEmail: customer@example.com
+    startTime: 30-01-2026 18:00
+    endTime: 30-01-2026 23:00
+    partySize: 20
+    status: CONFIRMED
+
+  - id: 695f1f5a364df46288b73002
+    restaurantId: 695f118f82b17b0e76aa47da
+    spaceId: a82122c2-6bb7-4f4a-b8e8-ff382e141e3e
+    customerEmail: customer@example.com
+    startTime: 30-01-2026 15:00
+    endTime: 30-01-2026 18:00
+    partySize: 60
+    status: CONFIRMED
+
+  - id: 695f1f5a364df46288b73003
+    restaurantId: 695f118f82b17b0e76aa47da
+    spaceId: a664d1b7-1ed8-42ad-9c75-fca71f43aff0
+    customerEmail: customer2@example.com
+    startTime: 30-01-2026 18:00
+    endTime: 30-01-2026 20:00
+    partySize: 110
+    status: CONFIRMED
+
+  - id: 695f1f5a364df46288b73005
+    restaurantId: 695f1151aec657696e6af7c4
+    spaceId: aa43ac6a-f8db-423e-be5b-ca91ba73c0e8
+    customerEmail: customer@example.com
+    startTime: 30-01-2026 20:00
+    endTime: 30-01-2026 23:00
+    partySize: 12
+    status: CONFIRMED

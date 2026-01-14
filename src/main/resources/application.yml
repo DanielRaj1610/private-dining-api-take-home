@@ -1,0 +1,25 @@
+# Application Configuration
+spring:
+  application:
+    name: private-dining
+  data:
+    mongodb:
+      database: private_dining
+
+# Embedded MongoDB Configuration
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.2
+
+# Server Configuration
+server:
+  port: 8081
+
+# Logging Configuration
+logging:
+  level:
+    com.opentable.privatedining: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    de.flapdoodle.embed.mongo: INFO
