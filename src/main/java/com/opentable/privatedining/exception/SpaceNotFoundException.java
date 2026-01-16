@@ -5,6 +5,10 @@ import java.util.UUID;
 
 public class SpaceNotFoundException extends RuntimeException {
 
+    public SpaceNotFoundException(UUID spaceId) {
+        super("Space not found with ID: " + spaceId.toString());
+    }
+
     public SpaceNotFoundException(ObjectId restaurantId, UUID spaceId) {
         super("Space not found with ID: " + spaceId.toString() + " in restaurant: " + restaurantId.toString());
     }
