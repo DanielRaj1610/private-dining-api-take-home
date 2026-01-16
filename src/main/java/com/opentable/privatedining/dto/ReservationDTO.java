@@ -1,6 +1,7 @@
 package com.opentable.privatedining.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.opentable.privatedining.model.enums.ReservationStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -31,11 +32,11 @@ public class ReservationDTO {
     private Integer partySize;
 
     @Schema(description = "Status of the reservation", example = "CONFIRMED")
-    private String status;
+    private ReservationStatus status;
 
     public ReservationDTO() {}
 
-    public ReservationDTO(String restaurantId, UUID spaceId, String customerEmail, LocalDateTime startTime, LocalDateTime endTime, Integer partySize, String status) {
+    public ReservationDTO(String restaurantId, UUID spaceId, String customerEmail, LocalDateTime startTime, LocalDateTime endTime, Integer partySize, ReservationStatus status) {
         this.restaurantId = restaurantId;
         this.spaceId = spaceId;
         this.customerEmail = customerEmail;
@@ -101,11 +102,11 @@ public class ReservationDTO {
         this.partySize = partySize;
     }
 
-    public String getStatus() {
+    public ReservationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ReservationStatus status) {
         this.status = status;
     }
 }
