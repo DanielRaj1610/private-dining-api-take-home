@@ -2,24 +2,29 @@
 spring:
   application:
     name: private-dining
-  data:
-    mongodb:
-      database: private_dining
-
-# Embedded MongoDB Configuration
-de:
-  flapdoodle:
-    mongodb:
-      embedded:
-        version: 7.0.2
+  profiles:
+    active: dev
 
 # Server Configuration
 server:
-  port: 8081
+  port: 8080
 
-# Logging Configuration
-logging:
-  level:
-    com.opentable.privatedining: DEBUG
-    org.springframework.data.mongodb: DEBUG
-    de.flapdoodle.embed.mongo: INFO
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      base-path: /api/v1/actuator
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# SpringDoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha

@@ -1,0 +1,19 @@
+# Test Profile Configuration
+spring:
+  data:
+    mongodb:
+      database: private_dining_test
+
+# Embedded MongoDB Configuration for Tests
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.2
+
+# Logging Configuration - Less verbose for tests
+logging:
+  level:
+    com.opentable.privatedining: DEBUG
+    org.springframework.data.mongodb: WARN
+    de.flapdoodle.embed.mongo: WARN

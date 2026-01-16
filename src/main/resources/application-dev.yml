@@ -1,0 +1,21 @@
+# Development Profile Configuration
+spring:
+  data:
+    mongodb:
+      database: private_dining
+      # For local Docker MongoDB, use: mongodb://localhost:27017/private_dining
+      # For embedded MongoDB, no URI needed - Flapdoodle handles it
+
+# Embedded MongoDB Configuration (for development without Docker)
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.2
+
+# Logging Configuration
+logging:
+  level:
+    com.opentable.privatedining: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    de.flapdoodle.embed.mongo: INFO

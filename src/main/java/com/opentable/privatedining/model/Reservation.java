@@ -1,97 +1,162 @@
 package com.opentable.privatedining.model;
 
+import com.opentable.privatedining.model.enums.ReservationStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
+/**
+ * Reservation for a private dining space.
+ * Uses @Version for optimistic locking to handle concurrent bookings.
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "reservations")
 public class Reservation {
 
     @Id
     private ObjectId id;
+
+    /**
+     * Reference to the restaurant.
+     */
     private ObjectId restaurantId;
+
+    /**
+     * Reference to the space (UUID).
+     */
     private UUID spaceId;
-    private String customerEmail;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+
+    /**
+     * Date of the reservation.
+     */
+    private LocalDate reservationDate;
+
+    /**
+     * Start time in HH:mm format.
+     */
+    private String startTime;
+
+    /**
+     * End time in HH:mm format (calculated from start + slot duration).
+     */
+    private String endTime;
+
+    /**
+     * Number of guests.
+     */
     private Integer partySize;
-    private String status;
 
-    public Reservation() {}
+    /**
+     * Customer's full name.
+     */
+    private String customerName;
 
-    public Reservation(ObjectId restaurantId, UUID spaceId, String customerEmail, LocalDateTime startTime, LocalDateTime endTime, Integer partySize, String status) {
+    /**
+     * Customer's email address.
+     */
+    private String customerEmail;
+
+    /**
+     * Customer's phone number (optional).
+     */
+    private String customerPhone;
+
+    /**
+     * Current status of the reservation.
+     */
+    @Builder.Default
+    private ReservationStatus status = ReservationStatus.CONFIRMED;
+
+    /**
+     * Special requests or notes from the customer.
+     */
+    private String specialRequests;
+
+    /**
+     * Reason for cancellation (if cancelled).
+     */
+    private String cancellationReason;
+
+    /**
+     * Timestamp when the reservation was cancelled.
+     */
+    private LocalDateTime cancelledAt;
+
+    /**
+     * Version for optimistic locking.
+     * MongoDB will automatically increment this on each save.
+     */
+    @Version
+    private Long version;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    /**
+     * Legacy constructor for backward compatibility.
+     */
+    public Reservation(ObjectId restaurantId, UUID spaceId, String customerEmail,
+                       LocalDateTime startTime, LocalDateTime endTime,
+                       Integer partySize, String status) {
         this.restaurantId = restaurantId;
         this.spaceId = spaceId;
         this.customerEmail = customerEmail;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.reservationDate = startTime.toLocalDate();
+        this.startTime = startTime.toLocalTime().toString();
+        this.endTime = endTime.toLocalTime().toString();
         this.partySize = partySize;
-        this.status = status;
+        this.status = ReservationStatus.valueOf(status);
     }
 
-    public ObjectId getId() {
-        return id;
+    /**
+     * Get start time as LocalTime.
+     */
+    public LocalTime getStartTimeAsLocalTime() {
+        return startTime != null ? LocalTime.parse(startTime) : null;
     }
 
-    public void setId(ObjectId id) {
-        this.id = id;
+    /**
+     * Get end time as LocalTime.
+     */
+    public LocalTime getEndTimeAsLocalTime() {
+        return endTime != null ? LocalTime.parse(endTime) : null;
     }
 
-    public ObjectId getRestaurantId() {
-        return restaurantId;
+    /**
+     * Get start as LocalDateTime (combines date and time).
+     */
+    public LocalDateTime getStartDateTime() {
+        if (reservationDate != null && startTime != null) {
+            return LocalDateTime.of(reservationDate, LocalTime.parse(startTime));
+        }
+        return null;
     }
 
-    public void setRestaurantId(ObjectId restaurantId) {
-        this.restaurantId = restaurantId;
-    }
-
-    public UUID getSpaceId() {
-        return spaceId;
-    }
-
-    public void setSpaceId(UUID spaceId) {
-        this.spaceId = spaceId;
-    }
-
-    public String getCustomerEmail() {
-        return customerEmail;
-    }
-
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public Integer getPartySize() {
-        return partySize;
-    }
-
-    public void setPartySize(Integer partySize) {
-        this.partySize = partySize;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    /**
+     * Get end as LocalDateTime (combines date and time).
+     */
+    public LocalDateTime getEndDateTime() {
+        if (reservationDate != null && endTime != null) {
+            return LocalDateTime.of(reservationDate, LocalTime.parse(endTime));
+        }
+        return null;
     }
 }
