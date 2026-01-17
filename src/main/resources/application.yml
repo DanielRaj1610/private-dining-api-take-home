@@ -13,7 +13,6 @@ server:
 management:
   endpoints:
     web:
-      base-path: /api/v1/actuator
       exposure:
         include: health,info,metrics
   endpoint:
