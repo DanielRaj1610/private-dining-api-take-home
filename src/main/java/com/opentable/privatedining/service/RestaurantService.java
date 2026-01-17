@@ -3,25 +3,41 @@ package com.opentable.privatedining.service;
 import com.opentable.privatedining.model.Restaurant;
 import com.opentable.privatedining.model.Space;
 import com.opentable.privatedining.repository.RestaurantRepository;
+import com.opentable.privatedining.repository.SpaceRepository;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service for Restaurant management.
+ * Spaces are now stored in a separate collection and managed via SpaceRepository.
+ */
 @Service
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final SpaceRepository spaceRepository;
 
-    public RestaurantService(RestaurantRepository restaurantRepository) {
+    public RestaurantService(RestaurantRepository restaurantRepository,
+                             SpaceRepository spaceRepository) {
         this.restaurantRepository = restaurantRepository;
+        this.spaceRepository = spaceRepository;
     }
 
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
+    }
+
+    /**
+     * Get all restaurants with pagination.
+     */
+    public Page<Restaurant> getAllRestaurants(Pageable pageable) {
+        return restaurantRepository.findAll(pageable);
     }
 
     public Optional<Restaurant> getRestaurantById(ObjectId id) {
@@ -50,36 +66,60 @@ public class RestaurantService {
         return false;
     }
 
-    public Optional<Restaurant> addSpaceToRestaurant(ObjectId restaurantId, Space space) {
+    /**
+     * Add a space to a restaurant.
+     * Creates the space in the spaces collection with a reference to the restaurant.
+     */
+    public Optional<Space> addSpaceToRestaurant(ObjectId restaurantId, Space space) {
         Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId);
         if (restaurantOpt.isPresent()) {
-            Restaurant restaurant = restaurantOpt.get();
-            restaurant.getSpaces().add(space);
-            return Optional.of(restaurantRepository.save(restaurant));
+            if (space.getId() == null) {
+                space.setId(UUID.randomUUID());
+            }
+            space.setRestaurantId(restaurantId.toHexString());
+            return Optional.of(spaceRepository.save(space));
         }
         return Optional.empty();
     }
 
-    public Optional<Restaurant> removeSpaceFromRestaurant(ObjectId restaurantId, UUID spaceId) {
-        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId);
-        if (restaurantOpt.isPresent()) {
-            Restaurant restaurant = restaurantOpt.get();
-            restaurant.getSpaces().removeIf(space -> space.getId().equals(spaceId));
-            return Optional.of(restaurantRepository.save(restaurant));
+    /**
+     * Remove a space from a restaurant.
+     * Deletes the space from the spaces collection.
+     */
+    public boolean removeSpaceFromRestaurant(ObjectId restaurantId, UUID spaceId) {
+        Optional<Space> spaceOpt = spaceRepository.findByIdAndRestaurantId(
+                spaceId, restaurantId.toHexString());
+        if (spaceOpt.isPresent()) {
+            spaceRepository.deleteById(spaceId);
+            return true;
         }
-        return Optional.empty();
+        return false;
     }
 
+    /**
+     * Get a space by ID within a restaurant.
+     */
     public Optional<Space> getSpaceById(ObjectId restaurantId, UUID spaceId) {
-        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId);
-        if (restaurantOpt.isPresent()) {
-            return restaurantOpt.get().getSpaces().stream()
-                    .filter(space -> space.getId().equals(spaceId))
-                    .findFirst();
-        }
-        return Optional.empty();
+        return spaceRepository.findByIdAndRestaurantId(spaceId, restaurantId.toHexString());
     }
 
+    /**
+     * Get all spaces for a restaurant.
+     */
+    public List<Space> getSpacesForRestaurant(ObjectId restaurantId) {
+        return spaceRepository.findByRestaurantId(restaurantId.toHexString());
+    }
+
+    /**
+     * Get all active spaces for a restaurant.
+     */
+    public List<Space> getActiveSpacesForRestaurant(ObjectId restaurantId) {
+        return spaceRepository.findByRestaurantIdAndIsActiveTrue(restaurantId.toHexString());
+    }
+
+    /**
+     * Check if a space exists in a restaurant.
+     */
     public boolean spaceExistsInRestaurant(ObjectId restaurantId, UUID spaceId) {
         return getSpaceById(restaurantId, spaceId).isPresent();
     }
