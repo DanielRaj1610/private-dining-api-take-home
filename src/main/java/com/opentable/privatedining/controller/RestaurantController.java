@@ -2,6 +2,7 @@ package com.opentable.privatedining.controller;
 
 import com.opentable.privatedining.dto.RestaurantDTO;
 import com.opentable.privatedining.dto.SpaceDTO;
+import com.opentable.privatedining.dto.response.PageResponse;
 import com.opentable.privatedining.mapper.RestaurantMapper;
 import com.opentable.privatedining.mapper.SpaceMapper;
 import com.opentable.privatedining.model.Restaurant;
@@ -15,6 +16,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +28,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Controller for Restaurant management.
+ * Spaces are managed in a separate collection but associated with restaurants.
+ */
 @RestController
-@RequestMapping("/v1/restaurants")
+@RequestMapping("/api/v1/restaurants")
 @Tag(name = "Restaurant", description = "Restaurant management API")
 public class RestaurantController {
 
@@ -32,21 +41,37 @@ public class RestaurantController {
     private final RestaurantMapper restaurantMapper;
     private final SpaceMapper spaceMapper;
 
-    public RestaurantController(RestaurantService restaurantService, RestaurantMapper restaurantMapper, SpaceMapper spaceMapper) {
+    public RestaurantController(RestaurantService restaurantService,
+                                RestaurantMapper restaurantMapper,
+                                SpaceMapper spaceMapper) {
         this.restaurantService = restaurantService;
         this.restaurantMapper = restaurantMapper;
         this.spaceMapper = spaceMapper;
     }
 
     @GetMapping
-    @Operation(summary = "Get all restaurants", description = "Retrieve a list of all restaurants")
+    @Operation(summary = "Get all restaurants (paginated)", description = "Retrieve a paginated list of all restaurants")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of restaurants",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestaurantDTO.class)))
-    public List<RestaurantDTO> getAllRestaurants() {
-        return restaurantService.getAllRestaurants()
-                .stream()
-                .map(restaurantMapper::toDTO)
-                .toList();
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageResponse.class)))
+    public PageResponse<RestaurantDTO> getAllRestaurants(
+            @Parameter(description = "Page number (0-indexed)", example = "0")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of items per page", example = "20")
+            @RequestParam(defaultValue = "20") int size,
+            @Parameter(description = "Sort field", example = "name")
+            @RequestParam(defaultValue = "name") String sortBy,
+            @Parameter(description = "Sort direction (asc/desc)", example = "asc")
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Restaurant> restaurantPage = restaurantService.getAllRestaurants(pageable);
+        Page<RestaurantDTO> dtoPage = restaurantPage.map(restaurantMapper::toDTO);
+
+        return PageResponse.from(dtoPage);
     }
 
     @GetMapping("/{id}")
@@ -127,15 +152,42 @@ public class RestaurantController {
         }
     }
 
-    @PostMapping("/{id}/spaces")
-    @Operation(summary = "Add space to restaurant", description = "Add a new space to a restaurant")
+    @GetMapping("/{id}/spaces")
+    @Operation(summary = "Get spaces for restaurant", description = "Get all spaces associated with a restaurant")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Space added successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestaurantDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Spaces retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SpaceDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found")
+    })
+    public ResponseEntity<List<SpaceDTO>> getSpacesForRestaurant(
+            @Parameter(description = "ID of the restaurant", required = true)
+            @PathVariable String id) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            Optional<Restaurant> restaurant = restaurantService.getRestaurantById(objectId);
+            if (restaurant.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            List<Space> spaces = restaurantService.getSpacesForRestaurant(objectId);
+            List<SpaceDTO> spaceDTOs = spaces.stream()
+                    .map(spaceMapper::toDTO)
+                    .toList();
+            return ResponseEntity.ok(spaceDTOs);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{id}/spaces")
+    @Operation(summary = "Add space to restaurant", description = "Add a new private dining space to a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Space added successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SpaceDTO.class))),
             @ApiResponse(responseCode = "404", description = "Restaurant not found"),
             @ApiResponse(responseCode = "400", description = "Invalid ID format")
     })
-    public ResponseEntity<RestaurantDTO> addSpaceToRestaurant(
+    public ResponseEntity<SpaceDTO> addSpaceToRestaurant(
             @Parameter(description = "ID of the restaurant", required = true)
             @PathVariable String id,
             @Parameter(description = "Space object to be added", required = true)
@@ -143,8 +195,8 @@ public class RestaurantController {
         try {
             ObjectId objectId = new ObjectId(id);
             Space space = spaceMapper.toModel(spaceDTO);
-            Optional<Restaurant> updatedRestaurant = restaurantService.addSpaceToRestaurant(objectId, space);
-            return updatedRestaurant.map(r -> ResponseEntity.ok(restaurantMapper.toDTO(r)))
+            Optional<Space> savedSpace = restaurantService.addSpaceToRestaurant(objectId, space);
+            return savedSpace.map(s -> ResponseEntity.status(HttpStatus.CREATED).body(spaceMapper.toDTO(s)))
                     .orElseGet(() -> ResponseEntity.notFound().build());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
@@ -154,12 +206,11 @@ public class RestaurantController {
     @DeleteMapping("/{id}/spaces/{spaceId}")
     @Operation(summary = "Remove space from restaurant", description = "Remove a space from a restaurant")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Space removed successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RestaurantDTO.class))),
+            @ApiResponse(responseCode = "204", description = "Space removed successfully"),
             @ApiResponse(responseCode = "404", description = "Restaurant or space not found"),
             @ApiResponse(responseCode = "400", description = "Invalid ID format")
     })
-    public ResponseEntity<RestaurantDTO> removeSpaceFromRestaurant(
+    public ResponseEntity<Void> removeSpaceFromRestaurant(
             @Parameter(description = "ID of the restaurant", required = true)
             @PathVariable String id,
             @Parameter(description = "UUID of the space to remove", required = true)
@@ -167,9 +218,8 @@ public class RestaurantController {
         try {
             ObjectId objectId = new ObjectId(id);
             UUID spaceUuid = UUID.fromString(spaceId);
-            Optional<Restaurant> updatedRestaurant = restaurantService.removeSpaceFromRestaurant(objectId, spaceUuid);
-            return updatedRestaurant.map(r -> ResponseEntity.ok(restaurantMapper.toDTO(r)))
-                    .orElseGet(() -> ResponseEntity.notFound().build());
+            boolean removed = restaurantService.removeSpaceFromRestaurant(objectId, spaceUuid);
+            return removed ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
