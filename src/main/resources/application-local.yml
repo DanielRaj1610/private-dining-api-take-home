@@ -1,0 +1,19 @@
+# Local Profile Configuration
+# Used when running Spring Boot app from IDE with Docker MongoDB
+# Start MongoDB with: docker compose -f docker-compose.db.yml up -d
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/private_dining?authSource=admin
+      database: private_dining
+  autoconfigure:
+    exclude:
+      - de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration
+
+# Logging Configuration
+logging:
+  level:
+    com.opentable.privatedining: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.mongodb.driver: INFO
