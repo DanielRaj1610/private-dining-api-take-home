@@ -1,0 +1,1684 @@
+{
+	"id": "8def11bc-c2b5-4101-8411-4eebec78f450",
+	"name": "Private Dining API v2",
+	"timestamp": "2026-01-17T09:56:36.500Z",
+	"collection_id": "12708224-58b0b979-18d0-43e4-aa5f-c4943474c6fd",
+	"folder_id": 0,
+	"environment_id": "12708224-99955239-975a-4b4b-90b5-97d8b1a7c7cc",
+	"totalPass": 97,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-01-17T09:56:35.261Z",
+	"totalFail": 5,
+	"results": [
+		{
+			"id": "15ded7d6-df94-47a7-8c88-e19a8926fe17",
+			"name": "1.1 Health Check",
+			"url": "http://localhost:8080/actuator/health",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"API is healthy": true,
+				"MongoDB is connected": true
+			},
+			"testPassFailCounts": {
+				"API is healthy": {
+					"pass": 1,
+					"fail": 0
+				},
+				"MongoDB is connected": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"API is healthy": true,
+					"MongoDB is connected": true
+				}
+			]
+		},
+		{
+			"id": "89a5d54b-9bd8-459d-934b-ab581b3aae09",
+			"name": "1.2 List Restaurants & Set Variables",
+			"url": "http://localhost:8080/api/v1/restaurants?page=0&size=1",
+			"time": 21,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Got restaurants list": true,
+				"Response has content array": true,
+				"Restaurant has required fields": true,
+				"Restaurant ID is valid MongoDB ObjectId": true,
+				"Variables set successfully": true
+			},
+			"testPassFailCounts": {
+				"Got restaurants list": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has content array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Restaurant has required fields": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Restaurant ID is valid MongoDB ObjectId": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Variables set successfully": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				21
+			],
+			"allTests": [
+				{
+					"Got restaurants list": true,
+					"Response has content array": true,
+					"Restaurant has required fields": true,
+					"Restaurant ID is valid MongoDB ObjectId": true,
+					"Variables set successfully": true
+				}
+			]
+		},
+		{
+			"id": "40731b94-1134-4e65-bbf3-2a63a7ce8a1b",
+			"name": "1.3 Get Restaurant Details",
+			"url": "http://localhost:8080/api/v1/restaurants/696990d583dafc5d804f8832",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Restaurant retrieved successfully": true,
+				"Restaurant has required fields": true,
+				"Restaurant ID matches requested": true
+			},
+			"testPassFailCounts": {
+				"Restaurant retrieved successfully": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Restaurant has required fields": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Restaurant ID matches requested": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"Restaurant retrieved successfully": true,
+					"Restaurant has required fields": true,
+					"Restaurant ID matches requested": true
+				}
+			]
+		},
+		{
+			"id": "df188fa5-b73d-4b13-a977-4fa841c7b36e",
+			"name": "1.4 List Spaces by Restaurant",
+			"url": "http://localhost:8080/api/v1/restaurants/696990d583dafc5d804f8832/spaces",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Spaces list retrieved successfully": true,
+				"Response is an array of spaces": true,
+				"Space has required fields": true
+			},
+			"testPassFailCounts": {
+				"Spaces list retrieved successfully": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is an array of spaces": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Space has required fields": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Spaces list retrieved successfully": true,
+					"Response is an array of spaces": true,
+					"Space has required fields": true
+				}
+			]
+		},
+		{
+			"id": "0629c9d9-2eb6-4ef7-8dd6-4a7ebd3a27de",
+			"name": "1.5 Get Availability & Find Slot",
+			"url": "http://localhost:8080/api/v1/availability/spaces/9cb34a37-d514-4103-bae9-b0ed1f7c7d09?date=2026-01-20",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Availability retrieved": true,
+				"AvailabilityResponse structure is valid": true,
+				"Restaurant is open on test date": true,
+				"TimeSlotResponse structure is valid": true,
+				"At least one bookable slot exists": true
+			},
+			"testPassFailCounts": {
+				"Availability retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"AvailabilityResponse structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Restaurant is open on test date": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TimeSlotResponse structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"At least one bookable slot exists": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"Availability retrieved": true,
+					"AvailabilityResponse structure is valid": true,
+					"Restaurant is open on test date": true,
+					"TimeSlotResponse structure is valid": true,
+					"At least one bookable slot exists": true
+				}
+			]
+		},
+		{
+			"id": "8da10422-8143-41e6-ae89-cbb8a219d5cc",
+			"name": "2.1 Create Reservation",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 25,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Reservation created": true,
+				"ReservationResponse has all required fields": true,
+				"Status is CONFIRMED": true,
+				"Has correct space (UUID comparison)": true,
+				"Party size matches request": true
+			},
+			"testPassFailCounts": {
+				"Reservation created": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ReservationResponse has all required fields": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status is CONFIRMED": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Has correct space (UUID comparison)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Party size matches request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"Reservation created": true,
+					"ReservationResponse has all required fields": true,
+					"Status is CONFIRMED": true,
+					"Has correct space (UUID comparison)": true,
+					"Party size matches request": true
+				}
+			]
+		},
+		{
+			"id": "c92a62e2-f87c-4288-88ee-6ee8e491407c",
+			"name": "2.2 Get Reservation by ID",
+			"url": "http://localhost:8080/api/v1/reservations/696b5cd32614ab1cb1725946",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Reservation retrieved": true,
+				"ReservationResponse structure is valid": true,
+				"Correct reservation ID": true,
+				"Status is CONFIRMED": true
+			},
+			"testPassFailCounts": {
+				"Reservation retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ReservationResponse structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Correct reservation ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status is CONFIRMED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Reservation retrieved": true,
+					"ReservationResponse structure is valid": true,
+					"Correct reservation ID": true,
+					"Status is CONFIRMED": true
+				}
+			]
+		},
+		{
+			"id": "03250128-910b-46dd-9b45-9dede8ae1509",
+			"name": "2.3 Verify Capacity Reduced",
+			"url": "http://localhost:8080/api/v1/availability/spaces/9cb34a37-d514-4103-bae9-b0ed1f7c7d09?date=2026-01-20",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Availability retrieved": true,
+				"Slot found": true,
+				"Capacity includes our booking of 4": true
+			},
+			"testPassFailCounts": {
+				"Availability retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Slot found": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Capacity includes our booking of 4": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				24
+			],
+			"allTests": [
+				{
+					"Availability retrieved": true,
+					"Slot found": true,
+					"Capacity includes our booking of 4": true
+				}
+			]
+		},
+		{
+			"id": "7186a3ff-b60d-429a-9295-723fdb9f81ea",
+			"name": "2.4 Cancel Reservation",
+			"url": "http://localhost:8080/api/v1/reservations/696b5cd32614ab1cb1725946/cancel",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Cancellation successful": true,
+				"CancellationResponse structure is valid": true,
+				"Has cancellation message": true,
+				"Cancellation reason is recorded": true
+			},
+			"testPassFailCounts": {
+				"Cancellation successful": {
+					"pass": 1,
+					"fail": 0
+				},
+				"CancellationResponse structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Has cancellation message": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Cancellation reason is recorded": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Cancellation successful": true,
+					"CancellationResponse structure is valid": true,
+					"Has cancellation message": true,
+					"Cancellation reason is recorded": true
+				}
+			]
+		},
+		{
+			"id": "8978ed8c-8bba-4260-9251-96e39f940398",
+			"name": "2.5 Verify Capacity Restored",
+			"url": "http://localhost:8080/api/v1/availability/spaces/9cb34a37-d514-4103-bae9-b0ed1f7c7d09?date=2026-01-20",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Availability retrieved": true,
+				"Capacity restored after cancellation": true
+			},
+			"testPassFailCounts": {
+				"Availability retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Capacity restored after cancellation": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Availability retrieved": true,
+					"Capacity restored after cancellation": true
+				}
+			]
+		},
+		{
+			"id": "92bce8a5-79d8-4655-b07b-28f5357e5b77",
+			"name": "3.1 Reject - Before Opening (06:00)",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 14,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is OUTSIDE_OPERATING_HOURS": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is OUTSIDE_OPERATING_HOURS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				14
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is OUTSIDE_OPERATING_HOURS": true
+				}
+			]
+		},
+		{
+			"id": "3e9d0226-aa21-46b7-8447-be8bca90e8de",
+			"name": "3.2.1 Reject - End Time Crosses Midnight (23:00)",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 15,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is OUTSIDE_OPERATING_HOURS": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is OUTSIDE_OPERATING_HOURS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				15
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is OUTSIDE_OPERATING_HOURS": true
+				}
+			]
+		},
+		{
+			"id": "d9fbfead-0310-4f99-abfb-67985cb7c586",
+			"name": "3.2.2 Reject - Early Morning (00:30)",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 13,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is OUTSIDE_OPERATING_HOURS": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is OUTSIDE_OPERATING_HOURS": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is OUTSIDE_OPERATING_HOURS": true
+				}
+			]
+		},
+		{
+			"id": "731a4a30-810c-4d4c-8053-38c39752c1df",
+			"name": "3.3 Reject - Invalid Time Slot (18:47)",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 13,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is INVALID_TIME_SLOT": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is INVALID_TIME_SLOT": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is INVALID_TIME_SLOT": true
+				}
+			]
+		},
+		{
+			"id": "e2363c11-4cac-4907-a72f-a4652524ade6",
+			"name": "3.4.1 Reject - Party Size Exceeds Space Max",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 12,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400 Bad Request": true,
+				"Error code is INVALID_PARTY_SIZE": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400 Bad Request": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error code is INVALID_PARTY_SIZE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"Rejected with 400 Bad Request": true,
+					"Error code is INVALID_PARTY_SIZE": true
+				}
+			]
+		},
+		{
+			"id": "e8cba37c-5434-4fe3-8cc6-93ee64f76b8f",
+			"name": "3.4.2 Reject - Party Size Over 100 (Request Validation)",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400 Bad Request": true,
+				"Error code is INVALID_PARTY_SIZE": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400 Bad Request": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error code is INVALID_PARTY_SIZE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Rejected with 400 Bad Request": true,
+					"Error code is INVALID_PARTY_SIZE": true
+				}
+			]
+		},
+		{
+			"id": "84ad8b98-5c15-4d1c-ba95-095c1f2206ea",
+			"name": "3.5 Reject - Party Size Zero",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true
+				}
+			]
+		},
+		{
+			"id": "da7016df-d4e3-47f4-8e2d-894162a84ce0",
+			"name": "3.6 Reject - Past Date",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 4,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is PAST_DATE": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is PAST_DATE": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is PAST_DATE": true
+				}
+			]
+		},
+		{
+			"id": "8d3f4ab5-1687-472c-9531-01a21288592e",
+			"name": "3.7 Reject - Beyond 90 Days",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 13,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is ADVANCE_BOOKING_LIMIT_EXCEEDED": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is ADVANCE_BOOKING_LIMIT_EXCEEDED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is ADVANCE_BOOKING_LIMIT_EXCEEDED": true
+				}
+			]
+		},
+		{
+			"id": "24fcfdb7-9152-4d08-a60f-f0e71afdf504",
+			"name": "3.8 Reject - Missing Required Fields",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true
+				}
+			]
+		},
+		{
+			"id": "2b467e5a-b6ba-4e3c-a355-7b6b464b69b4",
+			"name": "3.9 Reject - Invalid Email Format",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 5,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is INVALID_EMAIL": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is INVALID_EMAIL": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is INVALID_EMAIL": true
+				}
+			]
+		},
+		{
+			"id": "5b413e95-9f20-4e63-9f90-c32dcf6e31a7",
+			"name": "3.10 Reject - Non-Existent Space",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 10,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Rejected with 404": true,
+				"Error is SPACE_NOT_FOUND": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 404": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is SPACE_NOT_FOUND": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Rejected with 404": true,
+					"Error is SPACE_NOT_FOUND": true
+				}
+			]
+		},
+		{
+			"id": "d7bc907c-e613-4fa2-a75d-1fe40ca78d23",
+			"name": "3.11 Reject - Non-Existent Reservation",
+			"url": "http://localhost:8080/api/v1/reservations/000000000000000000000000",
+			"time": 6,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Rejected with 404": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Rejected with 404": true
+				}
+			]
+		},
+		{
+			"id": "a0d8527f-bb81-47cd-97ea-5f92f0510d4b",
+			"name": "3.12 Reject - Cancel Already Cancelled",
+			"url": "http://localhost:8080/api/v1/reservations/696b5cd32614ab1cb1725946/cancel",
+			"time": 9,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Rejected with 400": true,
+				"Error is ALREADY_CANCELLED": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error is ALREADY_CANCELLED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Rejected with 400": true,
+					"Error is ALREADY_CANCELLED": true
+				}
+			]
+		},
+		{
+			"id": "d6138cff-c87d-4123-988d-6714a9bb7828",
+			"name": "4.1 Occupancy Report - Daily",
+			"url": "http://localhost:8080/api/v1/reports/occupancy?restaurantId=696990d583dafc5d804f8832&startDate=2025-12-18&endDate=2026-01-17&granularity=DAILY",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Report generated successfully": true,
+				"OccupancyReportResponse structure is valid": true,
+				"Report period has dates": true,
+				"Summary has metrics": true
+			},
+			"testPassFailCounts": {
+				"Report generated successfully": {
+					"pass": 1,
+					"fail": 0
+				},
+				"OccupancyReportResponse structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Report period has dates": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Summary has metrics": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				24
+			],
+			"allTests": [
+				{
+					"Report generated successfully": true,
+					"OccupancyReportResponse structure is valid": true,
+					"Report period has dates": true,
+					"Summary has metrics": true
+				}
+			]
+		},
+		{
+			"id": "5d4eda38-f9c5-4a2d-ac63-121fe80166f3",
+			"name": "4.2 Occupancy Report - Hourly",
+			"url": "http://localhost:8080/api/v1/reports/occupancy?restaurantId=696990d583dafc5d804f8832&startDate=2026-01-10&endDate=2026-01-17&granularity=HOURLY",
+			"time": 22,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Report generated successfully": true,
+				"Report has valid structure for hourly request": true
+			},
+			"testPassFailCounts": {
+				"Report generated successfully": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Report has valid structure for hourly request": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				22
+			],
+			"allTests": [
+				{
+					"Report generated successfully": true,
+					"Report has valid structure for hourly request": true
+				}
+			]
+		},
+		{
+			"id": "8ec7f54a-b96a-4385-9a01-38a7bc1162e3",
+			"name": "4.3 Occupancy Report - With Space Filter",
+			"url": "http://localhost:8080/api/v1/reports/occupancy?restaurantId=696990d583dafc5d804f8832&startDate=2026-01-03&endDate=2026-01-17&granularity=DAILY&spaceId=9cb34a37-d514-4103-bae9-b0ed1f7c7d09",
+			"time": 18,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Report generated successfully": true,
+				"Report filtered by space": true
+			},
+			"testPassFailCounts": {
+				"Report generated successfully": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Report filtered by space": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				18
+			],
+			"allTests": [
+				{
+					"Report generated successfully": true,
+					"Report filtered by space": true
+				}
+			]
+		},
+		{
+			"id": "a248a8ff-950b-4910-af08-337200acd8a2",
+			"name": "4.4 Reject - Non-Existent Restaurant",
+			"url": "http://localhost:8080/api/v1/reports/occupancy?restaurantId=000000000000000000000000&startDate=2026-01-10&endDate=2026-01-17&granularity=DAILY",
+			"time": 6,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Rejected with 404": true
+			},
+			"testPassFailCounts": {
+				"Rejected with 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Rejected with 404": true
+				}
+			]
+		},
+		{
+			"id": "b25920fc-9d0c-4bb3-87fa-0963a8162372",
+			"name": "5.1 List All Restaurants",
+			"url": "http://localhost:8080/api/v1/restaurants?page=0&size=10",
+			"time": 50,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status 200": true,
+				"PageResponse structure is valid": true,
+				"RestaurantDTO structure is valid": true
+			},
+			"testPassFailCounts": {
+				"Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"PageResponse structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"RestaurantDTO structure is valid": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				50
+			],
+			"allTests": [
+				{
+					"Status 200": true,
+					"PageResponse structure is valid": true,
+					"RestaurantDTO structure is valid": true
+				}
+			]
+		},
+		{
+			"id": "711c340e-5a2a-4874-ba5c-55a7c1946266",
+			"name": "5.2 Get Single Restaurant",
+			"url": "http://localhost:8080/api/v1/restaurants/696990d583dafc5d804f8832",
+			"time": 11,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status 200": true,
+				"RestaurantDTO structure is valid": true,
+				"SpaceDTO structure in spaces array": true
+			},
+			"testPassFailCounts": {
+				"Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"RestaurantDTO structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SpaceDTO structure in spaces array": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				11
+			],
+			"allTests": [
+				{
+					"Status 200": true,
+					"RestaurantDTO structure is valid": true,
+					"SpaceDTO structure in spaces array": true
+				}
+			]
+		},
+		{
+			"id": "124601e1-91cd-4757-ad08-bd5a47995cee",
+			"name": "5.3 Get Restaurant Spaces",
+			"url": "http://localhost:8080/api/v1/restaurants/696990d583dafc5d804f8832/spaces",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status 200": true,
+				"Response is array of SpaceDTO": true,
+				"SpaceDTO structure is valid": true
+			},
+			"testPassFailCounts": {
+				"Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is array of SpaceDTO": {
+					"pass": 1,
+					"fail": 0
+				},
+				"SpaceDTO structure is valid": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Status 200": true,
+					"Response is array of SpaceDTO": true,
+					"SpaceDTO structure is valid": true
+				}
+			]
+		},
+		{
+			"id": "504412e5-162d-4b0c-8e00-a14dcb26965a",
+			"name": "5.4 Get Non-Existent Restaurant",
+			"url": "http://localhost:8080/api/v1/restaurants/000000000000000000000000",
+			"time": 6,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Returns 404": true
+			},
+			"testPassFailCounts": {
+				"Returns 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Returns 404": true
+				}
+			]
+		},
+		{
+			"id": "16eba978-1c0a-42fc-a720-76392108eafd",
+			"name": "6.1 List All Reservations (Paginated)",
+			"url": "http://localhost:8080/api/v1/reservations?page=0&size=10&sortBy=reservationDate&sortDir=desc",
+			"time": 20,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status 200": true,
+				"PageResponse structure is valid": true,
+				"ReservationDTO structure is valid": true
+			},
+			"testPassFailCounts": {
+				"Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"PageResponse structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"ReservationDTO structure is valid": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				20
+			],
+			"allTests": [
+				{
+					"Status 200": true,
+					"PageResponse structure is valid": true,
+					"ReservationDTO structure is valid": true
+				}
+			]
+		},
+		{
+			"id": "5e0c738b-6fa3-41b1-b0ca-0d0153ad2f64",
+			"name": "6.2 Setup - Get Fresh Availability for testDate2",
+			"url": "http://localhost:8080/api/v1/availability/spaces/9cb34a37-d514-4103-bae9-b0ed1f7c7d09?date=2026-01-22",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Availability retrieved": true,
+				"Found slot with sufficient capacity": true
+			},
+			"testPassFailCounts": {
+				"Availability retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Found slot with sufficient capacity": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Availability retrieved": true,
+					"Found slot with sufficient capacity": true
+				}
+			]
+		},
+		{
+			"id": "2570e491-c01e-4d41-99c5-0e945086a098",
+			"name": "6.3 Create First Booking in Slot",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 25,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"First reservation created": true,
+				"Status is CONFIRMED": true
+			},
+			"testPassFailCounts": {
+				"First reservation created": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status is CONFIRMED": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"First reservation created": true,
+					"Status is CONFIRMED": true
+				}
+			]
+		},
+		{
+			"id": "1c0dc8d0-5288-4fab-a86b-a0ddd0f79ce8",
+			"name": "6.4 Create Second Booking in SAME Slot (Flexible Capacity)",
+			"url": "http://localhost:8080/api/v1/reservations",
+			"time": 30,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Second reservation in same slot created": true,
+				"Status is CONFIRMED": true,
+				"Same time slot as first reservation": false
+			},
+			"testPassFailCounts": {
+				"Second reservation in same slot created": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status is CONFIRMED": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Same time slot as first reservation": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				30
+			],
+			"allTests": [
+				{
+					"Second reservation in same slot created": true,
+					"Status is CONFIRMED": true,
+					"Same time slot as first reservation": false
+				}
+			]
+		},
+		{
+			"id": "4456eb64-da5e-4866-94f6-f39ac708c72c",
+			"name": "6.5 Verify Combined Capacity Usage",
+			"url": "http://localhost:8080/api/v1/availability/spaces/9cb34a37-d514-4103-bae9-b0ed1f7c7d09?date=2026-01-22",
+			"time": 17,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Availability retrieved": true,
+				"Slot found for our reservations": true,
+				"Slot shows combined booked capacity": false,
+				"Slot shows multiple existing reservations": false
+			},
+			"testPassFailCounts": {
+				"Availability retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Slot found for our reservations": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Slot shows combined booked capacity": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Slot shows multiple existing reservations": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				17
+			],
+			"allTests": [
+				{
+					"Availability retrieved": true,
+					"Slot found for our reservations": true,
+					"Slot shows combined booked capacity": false,
+					"Slot shows multiple existing reservations": false
+				}
+			]
+		},
+		{
+			"id": "6314557e-e430-46c7-a2a7-237965192613",
+			"name": "6.6 Get Slot Capacity Endpoint",
+			"url": "http://localhost:8080/api/v1/availability/spaces/9cb34a37-d514-4103-bae9-b0ed1f7c7d09/capacity?date=2026-01-22&startTime=20:00&endTime=18:30",
+			"time": 19,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Capacity info retrieved": true,
+				"CapacityInfo structure is valid": true,
+				"Booked capacity reflects our reservations": false
+			},
+			"testPassFailCounts": {
+				"Capacity info retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"CapacityInfo structure is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Booked capacity reflects our reservations": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				19
+			],
+			"allTests": [
+				{
+					"Capacity info retrieved": true,
+					"CapacityInfo structure is valid": true,
+					"Booked capacity reflects our reservations": false
+				}
+			]
+		},
+		{
+			"id": "35f4015b-d44e-483e-a4f2-e146fb72a03a",
+			"name": "6.7 Delete Reservation (with capacity release)",
+			"url": "http://localhost:8080/api/v1/reservations/696b5cd42614ab1cb1725948",
+			"time": 12,
+			"responseCode": {
+				"code": 204,
+				"name": "No Content"
+			},
+			"tests": {
+				"Reservation deleted": true
+			},
+			"testPassFailCounts": {
+				"Reservation deleted": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"Reservation deleted": true
+				}
+			]
+		},
+		{
+			"id": "46d6674e-0ca1-402c-bd3b-e37d68406f60",
+			"name": "6.8 Verify Capacity Restored After Delete",
+			"url": "http://localhost:8080/api/v1/availability/spaces/9cb34a37-d514-4103-bae9-b0ed1f7c7d09/capacity?date=2026-01-22&startTime=20:00&endTime=18:30",
+			"time": 22,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Capacity info retrieved": true,
+				"Capacity released after delete": false
+			},
+			"testPassFailCounts": {
+				"Capacity info retrieved": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Capacity released after delete": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				22
+			],
+			"allTests": [
+				{
+					"Capacity info retrieved": true,
+					"Capacity released after delete": false
+				}
+			]
+		},
+		{
+			"id": "f28cdd9d-0382-4d53-b2d1-f1011d4894a6",
+			"name": "6.9 Cleanup - Cancel Remaining Reservation",
+			"url": "http://localhost:8080/api/v1/reservations/696b5cd42614ab1cb1725947/cancel",
+			"time": 13,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Cleanup cancellation successful": true
+			},
+			"testPassFailCounts": {
+				"Cleanup cancellation successful": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"Cleanup cancellation successful": true
+				}
+			]
+		},
+		{
+			"id": "7bc02014-bea1-490a-9137-d68e8e13a28c",
+			"name": "6.10 Reject - Delete Non-Existent Reservation",
+			"url": "http://localhost:8080/api/v1/reservations/000000000000000000000000",
+			"time": 8,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"Returns 404 for non-existent reservation": true
+			},
+			"testPassFailCounts": {
+				"Returns 404 for non-existent reservation": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Returns 404 for non-existent reservation": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 628,
+	"collection": {
+		"requests": [
+			{
+				"id": "15ded7d6-df94-47a7-8c88-e19a8926fe17",
+				"method": "GET"
+			},
+			{
+				"id": "89a5d54b-9bd8-459d-934b-ab581b3aae09",
+				"method": "GET"
+			},
+			{
+				"id": "40731b94-1134-4e65-bbf3-2a63a7ce8a1b",
+				"method": "GET"
+			},
+			{
+				"id": "df188fa5-b73d-4b13-a977-4fa841c7b36e",
+				"method": "GET"
+			},
+			{
+				"id": "0629c9d9-2eb6-4ef7-8dd6-4a7ebd3a27de",
+				"method": "GET"
+			},
+			{
+				"id": "8da10422-8143-41e6-ae89-cbb8a219d5cc",
+				"method": "POST"
+			},
+			{
+				"id": "c92a62e2-f87c-4288-88ee-6ee8e491407c",
+				"method": "GET"
+			},
+			{
+				"id": "03250128-910b-46dd-9b45-9dede8ae1509",
+				"method": "GET"
+			},
+			{
+				"id": "7186a3ff-b60d-429a-9295-723fdb9f81ea",
+				"method": "POST"
+			},
+			{
+				"id": "8978ed8c-8bba-4260-9251-96e39f940398",
+				"method": "GET"
+			},
+			{
+				"id": "92bce8a5-79d8-4655-b07b-28f5357e5b77",
+				"method": "POST"
+			},
+			{
+				"id": "3e9d0226-aa21-46b7-8447-be8bca90e8de",
+				"method": "POST"
+			},
+			{
+				"id": "d9fbfead-0310-4f99-abfb-67985cb7c586",
+				"method": "POST"
+			},
+			{
+				"id": "731a4a30-810c-4d4c-8053-38c39752c1df",
+				"method": "POST"
+			},
+			{
+				"id": "e2363c11-4cac-4907-a72f-a4652524ade6",
+				"method": "POST"
+			},
+			{
+				"id": "e8cba37c-5434-4fe3-8cc6-93ee64f76b8f",
+				"method": "POST"
+			},
+			{
+				"id": "84ad8b98-5c15-4d1c-ba95-095c1f2206ea",
+				"method": "POST"
+			},
+			{
+				"id": "da7016df-d4e3-47f4-8e2d-894162a84ce0",
+				"method": "POST"
+			},
+			{
+				"id": "8d3f4ab5-1687-472c-9531-01a21288592e",
+				"method": "POST"
+			},
+			{
+				"id": "24fcfdb7-9152-4d08-a60f-f0e71afdf504",
+				"method": "POST"
+			},
+			{
+				"id": "2b467e5a-b6ba-4e3c-a355-7b6b464b69b4",
+				"method": "POST"
+			},
+			{
+				"id": "5b413e95-9f20-4e63-9f90-c32dcf6e31a7",
+				"method": "POST"
+			},
+			{
+				"id": "d7bc907c-e613-4fa2-a75d-1fe40ca78d23",
+				"method": "GET"
+			},
+			{
+				"id": "a0d8527f-bb81-47cd-97ea-5f92f0510d4b",
+				"method": "POST"
+			},
+			{
+				"id": "d6138cff-c87d-4123-988d-6714a9bb7828",
+				"method": "GET"
+			},
+			{
+				"id": "5d4eda38-f9c5-4a2d-ac63-121fe80166f3",
+				"method": "GET"
+			},
+			{
+				"id": "8ec7f54a-b96a-4385-9a01-38a7bc1162e3",
+				"method": "GET"
+			},
+			{
+				"id": "a248a8ff-950b-4910-af08-337200acd8a2",
+				"method": "GET"
+			},
+			{
+				"id": "b25920fc-9d0c-4bb3-87fa-0963a8162372",
+				"method": "GET"
+			},
+			{
+				"id": "711c340e-5a2a-4874-ba5c-55a7c1946266",
+				"method": "GET"
+			},
+			{
+				"id": "124601e1-91cd-4757-ad08-bd5a47995cee",
+				"method": "GET"
+			},
+			{
+				"id": "504412e5-162d-4b0c-8e00-a14dcb26965a",
+				"method": "GET"
+			},
+			{
+				"id": "16eba978-1c0a-42fc-a720-76392108eafd",
+				"method": "GET"
+			},
+			{
+				"id": "5e0c738b-6fa3-41b1-b0ca-0d0153ad2f64",
+				"method": "GET"
+			},
+			{
+				"id": "2570e491-c01e-4d41-99c5-0e945086a098",
+				"method": "POST"
+			},
+			{
+				"id": "1c0dc8d0-5288-4fab-a86b-a0ddd0f79ce8",
+				"method": "POST"
+			},
+			{
+				"id": "4456eb64-da5e-4866-94f6-f39ac708c72c",
+				"method": "GET"
+			},
+			{
+				"id": "6314557e-e430-46c7-a2a7-237965192613",
+				"method": "GET"
+			},
+			{
+				"id": "35f4015b-d44e-483e-a4f2-e146fb72a03a",
+				"method": "DELETE"
+			},
+			{
+				"id": "46d6674e-0ca1-402c-bd3b-e37d68406f60",
+				"method": "GET"
+			},
+			{
+				"id": "f28cdd9d-0382-4d53-b2d1-f1011d4894a6",
+				"method": "POST"
+			},
+			{
+				"id": "7bc02014-bea1-490a-9137-d68e8e13a28c",
+				"method": "DELETE"
+			}
+		]
+	}
+}
