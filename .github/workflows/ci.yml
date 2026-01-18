@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, feature/** ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ping: 1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: ./mvnw clean install -DskipTests
+
+      - name: Run tests
+        run: ./mvnw test
+        env:
+          SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/private-dining-test
+
+      - name: Generate test report
+        if: always()
+        run: ./mvnw surefire-report:report-only
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: target/surefire-reports/
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: target/site/
+
+      - name: Check test results
+        if: always()
+        run: |
+          if [ -f target/surefire-reports/TEST-*.xml ]; then
+            echo "✅ Tests completed"
+            grep -h "tests=" target/surefire-reports/TEST-*.xml | head -1
+          fi
+
+  code-quality:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Maven verify
+        run: ./mvnw verify -DskipTests
+
+      - name: Check for compilation warnings
+        run: ./mvnw compile -Xlint:all
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t private-dining-api:test .
+
+      - name: Test Docker image
+        run: |
+          docker images | grep private-dining-api
+          echo "✅ Docker image built successfully"

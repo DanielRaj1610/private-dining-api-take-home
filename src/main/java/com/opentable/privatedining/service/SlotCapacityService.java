@@ -39,7 +39,22 @@ public class SlotCapacityService {
      * Atomically try to reserve capacity for a booking.
      * Returns true if capacity was successfully reserved, false if insufficient capacity.
      *
-     * This uses findAndModify with a condition that only succeeds if there's enough capacity.
+     * ALGORITHM: Atomic Compare-And-Swap for Concurrent Capacity Management
+     * -----------------------------------------------------------------------
+     * This method prevents race conditions in concurrent booking scenarios using
+     * MongoDB's findAndModify operation, which guarantees atomicity.
+     *
+     * Race Condition Example (WITHOUT atomic operation):
+     *   Thread A: Read bookedCapacity = 8, maxCapacity = 10, requesting 3
+     *   Thread B: Read bookedCapacity = 8, maxCapacity = 10, requesting 3
+     *   Thread A: Check 8 + 3 <= 10 (PASS), Write bookedCapacity = 11
+     *   Thread B: Check 8 + 3 <= 10 (PASS), Write bookedCapacity = 14
+     *   Result: OVERBOOKING! 14 > 10 capacity exceeded
+     *
+     * With Atomic Operation:
+     *   Both threads execute findAndModify with condition: bookedCapacity <= (10 - 3)
+     *   Only ONE thread's condition will succeed (whoever arrives first)
+     *   Second thread gets null result = booking rejected
      *
      * @param space The space
      * @param date The reservation date
@@ -53,15 +68,18 @@ public class SlotCapacityService {
         String slotId = SlotCapacity.generateId(space.getId(), date, startTime);
         int maxCapacity = space.getMaxCapacity();
 
-        // First, ensure the slot capacity document exists
+        // First, ensure the slot capacity document exists (idempotent upsert)
         ensureSlotExists(slotId, space.getId(), date, startTime, endTime, maxCapacity);
 
-        // Now atomically increment capacity only if it won't exceed max
+        // CRITICAL: Atomic capacity reservation using findAndModify
+        // This single operation does: check condition + update + return result
+        // The condition ensures we only update if capacity is available
         Query query = new Query(Criteria.where("_id").is(slotId)
-                .and("bookedCapacity").lte(maxCapacity - partySize));
+                .and("bookedCapacity").lte(maxCapacity - partySize));  // Only update if room available
 
         Update update = new Update().inc("bookedCapacity", partySize);
 
+        // MongoDB findAndModify guarantees atomicity: if condition fails, returns null
         SlotCapacity result = mongoTemplate.findAndModify(
                 query,
                 update,

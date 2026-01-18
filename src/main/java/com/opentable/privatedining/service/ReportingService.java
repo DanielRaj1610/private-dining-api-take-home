@@ -96,6 +96,46 @@ public class ReportingService {
 
     /**
      * Build daily occupancy breakdown.
+     *
+     * ALGORITHM: Multi-Dimensional Aggregation with Time-Series Analysis
+     * -------------------------------------------------------------------
+     * This method performs hierarchical data aggregation to generate occupancy analytics:
+     *
+     * Complexity: O(d * (r + s + h)) where:
+     *   d = number of days in date range
+     *   r = number of reservations
+     *   s = number of spaces
+     *   h = number of unique hours (if hourly breakdown enabled)
+     *
+     * Processing Steps:
+     * 1. Group reservations by date using stream collectors (O(r))
+     * 2. For each day in range (O(d)):
+     *    a. Calculate daily metrics: total reservations, total guests
+     *    b. Compute utilization percentage against total capacity
+     *    c. Identify peak hour by grouping reservations by hour and finding max
+     *    d. Build space-level breakdown (O(s) per day)
+     *    e. Optionally build hourly breakdown (O(h) per day)
+     *
+     * Utilization Calculation Formula:
+     *   utilizationPercentage = (totalGuests / totalCapacity) * 100
+     *
+     * Example:
+     *   Date Range: 2024-02-15 to 2024-02-17 (3 days)
+     *   Total Capacity: 50 guests (across all spaces)
+     *   Day 1: 30 guests booked → 60% utilization
+     *   Day 2: 45 guests booked → 90% utilization
+     *   Day 3: 15 guests booked → 30% utilization
+     *
+     * Peak Hour Detection:
+     *   Group reservations by hour (e.g., "18:00", "19:00")
+     *   Sum party sizes per hour
+     *   Find hour with maximum guests
+     *
+     * Why This Approach:
+     * - Stream-based grouping enables efficient date/hour partitioning
+     * - Iterating through date range ensures all days are represented (even with zero bookings)
+     * - Hierarchical breakdown (daily → space → hourly) provides multi-level insights
+     * - BigDecimal precision for financial-grade percentage calculations
      */
     private List<DailyOccupancy> buildDailyBreakdown(List<Reservation> reservations,
                                                       List<Space> spaces,

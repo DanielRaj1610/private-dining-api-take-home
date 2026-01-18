@@ -23,6 +23,21 @@ public class TimeSlotGenerator {
     /**
      * Generate all possible time slots for a space based on operating hours.
      *
+     * ALGORITHM: Time Slot Generation with Interval Overlap Detection
+     * ---------------------------------------------------------------
+     * Complexity: O(n * m) where n = number of slots, m = number of reservations
+     * For each time slot, we check all existing reservations for overlap.
+     *
+     * Example:
+     *   Operating Hours: 18:00 - 23:00
+     *   Slot Duration: 90 minutes
+     *   Buffer: 0 minutes
+     *   Generated Slots:
+     *     1. 18:00 - 19:30
+     *     2. 19:30 - 21:00
+     *     3. 21:00 - 22:30
+     *     (22:30 + 90min = 00:00 next day, stop)
+     *
      * @param operatingHours Operating hours for the day
      * @param space The space with slot configuration
      * @param existingReservations Existing reservations for the time period
@@ -34,14 +49,14 @@ public class TimeSlotGenerator {
         List<TimeSlotResponse> slots = new ArrayList<>();
 
         if (operatingHours == null || Boolean.TRUE.equals(operatingHours.getIsClosed())) {
-            return slots;
+            return slots;  // Restaurant closed on this day
         }
 
         LocalTime openTime = operatingHours.getOpenTimeAsLocalTime();
         LocalTime closeTime = operatingHours.getCloseTimeAsLocalTime();
 
         if (openTime == null || closeTime == null) {
-            return slots;
+            return slots;  // Invalid operating hours
         }
 
         int slotDuration = space.getSlotDurationMinutes();
@@ -56,16 +71,17 @@ public class TimeSlotGenerator {
         while (true) {
             LocalTime slotEnd = currentSlotStart.plusMinutes(slotDuration);
 
-            // Check if slot end exceeds close time or wraps around midnight
-            // If slotEnd is before currentSlotStart, it means we wrapped around midnight
+            // EDGE CASE: Midnight wraparound detection
+            // If slotEnd < currentSlotStart, LocalTime wrapped to next day (e.g., 23:30 + 60min = 00:30)
+            // This prevents generating invalid slots that cross midnight
             boolean wrapsAroundMidnight = slotEnd.isBefore(currentSlotStart);
 
             // Stop if: slot end is after close time OR we wrapped around midnight
             if (wrapsAroundMidnight || slotEnd.isAfter(closeTime)) {
-                break;
+                break;  // No more valid slots fit within operating hours
             }
 
-            // Calculate booked capacity for this slot
+            // Calculate booked capacity for this slot (sum of all overlapping reservation party sizes)
             int bookedCapacity = calculateBookedCapacity(existingReservations,
                     currentSlotStart, slotEnd);
             int existingReservationCount = countOverlappingReservations(existingReservations,
@@ -115,8 +131,32 @@ public class TimeSlotGenerator {
     }
 
     /**
-     * Check if a reservation overlaps with a time slot.
-     * Overlap occurs when: resStart < slotEnd AND resEnd > slotStart
+     * Check if a reservation overlaps with a time slot using interval intersection formula.
+     *
+     * ALGORITHM: Interval Intersection Detection
+     * ------------------------------------------
+     * Formula: resStart < slotEnd AND resEnd > slotStart
+     *
+     * Explanation: Two time intervals overlap if they share any moment in time.
+     * The formula works by checking if the reservation starts before the slot ends
+     * AND if the reservation ends after the slot starts.
+     *
+     * Overlap Cases:
+     * 1. Reservation starts before slot and ends during: (17:30-18:45) overlaps (18:00-19:30)
+     * 2. Reservation starts during slot and ends after: (19:00-20:00) overlaps (18:00-19:30)
+     * 3. Reservation completely contains slot: (17:00-21:00) overlaps (18:00-19:30)
+     * 4. Slot completely contains reservation: (18:00-19:30) overlaps (18:30-19:00)
+     *
+     * Non-Overlap Cases:
+     * 1. Reservation ends before slot starts: (17:00-17:30) does NOT overlap (18:00-19:30)
+     * 2. Reservation starts after slot ends: (20:00-21:00) does NOT overlap (18:00-19:30)
+     * 3. Touching endpoints (same time): (17:00-18:00) does NOT overlap (18:00-19:30)
+     *    because isBefore(18:00, 18:00) = false
+     *
+     * @param reservation The reservation to check
+     * @param slotStart Slot start time
+     * @param slotEnd Slot end time
+     * @return true if reservation overlaps with the slot
      */
     private boolean isOverlapping(Reservation reservation, LocalTime slotStart, LocalTime slotEnd) {
         LocalTime resStart = reservation.getStartTimeAsLocalTime();
@@ -126,6 +166,8 @@ public class TimeSlotGenerator {
             return false;
         }
 
+        // Classic interval intersection: overlap if reservation starts before slot ends
+        // AND reservation ends after slot starts
         return resStart.isBefore(slotEnd) && resEnd.isAfter(slotStart);
     }
 

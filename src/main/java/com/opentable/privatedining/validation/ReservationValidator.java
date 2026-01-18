@@ -55,21 +55,41 @@ public class ReservationValidator {
     }
 
     /**
-     * Validate time slot alignment.
-     * Start time must align to slots generated from opening time.
+     * Validate time slot alignment using modular arithmetic relative to opening time.
      *
-     * @param startTime The start time
-     * @param openTime The restaurant opening time
+     * ALGORITHM: Time Slot Boundary Alignment Validation
+     * --------------------------------------------------
+     * This ensures reservations start at valid slot boundaries relative to opening time,
+     * preventing slot fragmentation and maintaining consistent spacing.
+     *
+     * Formula: (startTime - openTime) % slotDuration == 0
+     *
+     * Example with 90-minute slots, opening at 18:00:
+     *   Valid times:   18:00 (0 min), 19:30 (90 min), 21:00 (180 min), 22:30 (270 min)
+     *   Invalid times: 18:15 (15 min), 19:45 (105 min), 20:00 (120 min)
+     *   Calculation for 19:30: (1170 - 1080) % 90 = 90 % 90 = 0 ✓
+     *   Calculation for 19:45: (1185 - 1080) % 90 = 105 % 90 = 15 ✗
+     *
+     * Example with 30-minute slots, opening at 17:00:
+     *   Valid times:   17:00, 17:30, 18:00, 18:30, 19:00, etc.
+     *   Invalid times: 17:15, 17:45, 18:10, 18:25, etc.
+     *
+     * Why This Matters:
+     * Without alignment, users could book overlapping misaligned slots like 18:15-19:45
+     * and 19:30-21:00, causing management complexity and capacity calculation errors.
+     *
+     * @param startTime The requested start time
+     * @param openTime The restaurant opening time (slot boundary origin)
      * @param slotDurationMinutes The slot duration in minutes
-     * @throws InvalidTimeSlotException if the start time doesn't align
+     * @throws InvalidTimeSlotException if the start time doesn't align to valid boundaries
      */
     public void validateTimeSlotAlignment(LocalTime startTime, LocalTime openTime, int slotDurationMinutes) {
-        // Calculate minutes from opening time
+        // Convert both times to total minutes since midnight for arithmetic
         int startMinutes = startTime.getHour() * 60 + startTime.getMinute();
         int openMinutes = openTime.getHour() * 60 + openTime.getMinute();
         int minutesFromOpen = startMinutes - openMinutes;
 
-        // Start time must be at or after opening time and align to slot boundaries
+        // Check: 1) Start time is at or after opening, 2) Aligns to slot boundary
         if (minutesFromOpen < 0 || minutesFromOpen % slotDurationMinutes != 0) {
             throw new InvalidTimeSlotException(startTime, slotDurationMinutes);
         }
